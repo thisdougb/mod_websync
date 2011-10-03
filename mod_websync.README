@@ -1,0 +1,54 @@
+:: mod_websync ::
+
+What is it ?
+------------
+
+A simple Apache 2 module for syncing web content between web servers.
+
+
+How does it help ?
+------------------
+
+A cluster of web servers need to keep their web content (images, js, code, etc)
+synchronized.  There are various ways to combine shell scripts with rsync, and
+often with nfs, to keep mirror directories on multiple servers.  Sometimes
+these incarnations work, and often they don't.  A good Sysadmin won't be 
+troubled with the task of file syncing, but not everyone has access to a good
+Sysadmin.
+
+For some installations the file sync challenge involves trying to push and 
+pull files over the Internet.  This adds some new things into the mix like
+firewalls, tunnelling, access control, reslience, etc.
+
+Fear not, mod_websync should be able to help, and make things simpler at the 
+same time.  This module uses the apache server to transfer the files, and to 
+handle the access and authentication functions.
+
+
+A note on security
+------------------
+
+A public apache server should not have write permissions on files and 
+directories, because this might allow bad people to do bad things.  Securing
+apache is not going to be covered here, however one thing is worth pointing 
+out.  If you are going to use this module on a public site then configure it
+in a second instance of apache running on an alternative port, and running 
+as a different uid/gid to your main apache server.
+
+The description here is using a single apache instance, and is therefore
+insecure.  It is intended for illustration only.
+
+How it works
+------------
+
+Imagine a web server cluster sitting behind a load balancer, web1, web2, web3
+and web4.   An image file (/images/a.gif) is uploaded to web1, and this needs 
+to be sync'd to the other web servers.  
+
+To do the sync, call the following urls:
+
+http://web2/websync/images/a.gif?f=web1
+http://web3/websync/images/a.gif?f=web1
+http://web4/websync/images/a.gif?f=web1
+
+now /images/a.gif will exist on all web servers in the cluster.
