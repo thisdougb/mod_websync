@@ -1,0 +1,39 @@
+  MOD_WEBSYNC INSTALLATION OVERVIEW
+
+  Quick Start - Unix
+  ------------------
+
+  Compile and install the module on your test or dev system.
+
+    $ apxs -a -i -c mod_websync.c
+
+  Add the following basic configuration to load the module, and enable it
+  in a specific location.
+
+    LoadModule websync_module modules/mod_websync.so
+    <Location /websync>
+      SetHandler websync
+    </Location>
+
+  Restart apache for the changes to take effect.
+
+    $ /etc/init.d/httpd restart
+
+  NOTES: * Requires Apache 2, it will not work with Apache 1.3
+         * To install with axps requires httpd-dev.
+
+  Check the approriate errors logs for any startup errors, or errors while
+  processing requests.
+
+
+  Quick Remove - Unix
+  -------------------
+
+  If it's all gone wrong then just comment out the LoadModule directive 
+  in httpd.conf, and file a bug report.
+
+    httpd.conf: #LoadModule websync_module modules/mod_websync.so
+
+  And remember to restart apache.
+
+    $ /etc/init.d/httpd restart
