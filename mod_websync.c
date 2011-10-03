@@ -120,7 +120,7 @@ static int websync_handler(request_rec *r)
         return rv;
 
     rv = apr_socket_connect(sock, sa);
-    if (rv != APR_SUCCESS)
+    if (APR_SUCCESS != rv)
         return HTTP_INTERNAL_SERVER_ERROR;
 
     rv = apr_socket_send(sock, req_hdr, &len);
