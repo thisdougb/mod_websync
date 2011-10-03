@@ -51,7 +51,7 @@ static int websync_handler(request_rec *r)
     if (strcmp(r->handler, "websync")) {
         return DECLINED;
     }
-    if (r->method_number != M_GET) {
+    if (M_GET != r->method_number) {
         return HTTP_METHOD_NOT_ALLOWED;
     }
 
@@ -65,11 +65,11 @@ static int websync_handler(request_rec *r)
      *               urip ^
      */
     urip = r->uri;
-    if (*urip != '/')
+    if ('/' != *urip)
         return HTTP_INTERNAL_SERVER_ERROR;
     do {
         ++urip;
-    } while (*urip != '/' && *urip != '\0');
+    } while ('/' != *urip && '\0' != *urip);
 
     /* ensure we have f= args */
     if (NULL == r->args)
@@ -78,7 +78,7 @@ static int websync_handler(request_rec *r)
     /* move hostp to the beginning of the hostname */
     /* TODO: clean this up */
     hostp = r->args;
-    if (*hostp != 'f' && *(hostp+1) != '=')
+    if ('f' != *hostp && '=' != *(hostp+1))
         return HTTP_INTERNAL_SERVER_ERROR;
     hostp += 2;
 
@@ -93,8 +93,8 @@ static int websync_handler(request_rec *r)
     ap_rprintf(r, "the uri is %s<br>", r->uri);
     ap_rprintf(r, "the args %s<br>", r->args);
     ap_rprintf(r, "the file is %s<br>", urip);
-    ap_rprintf(r, "GET : http://%s%s<br>", hostp, urip);
-    ap_rprintf(r, "%s<br>", ap_document_root(r));
+    ap_rprintf(r, "calling GET : http://%s%s<br>", hostp, urip);
+    ap_rprintf(r, "document root: %s<br>", ap_document_root(r));
 
     /**
      * now create the return request and download the file
@@ -112,15 +112,15 @@ static int websync_handler(request_rec *r)
     apr_size_t len = strlen(req_hdr);
 
     rv = apr_sockaddr_info_get(&sa, hostp, APR_INET, DEFAULT_HTTP_PORT, 0, r->pool);
-    if (rv != APR_SUCCESS)
+    if (APR_SUCCESS != rv)
         return HTTP_INTERNAL_SERVER_ERROR;
 
     rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, APR_PROTO_TCP, r->pool);
-    if (rv != APR_SUCCESS)
+    if (APR_SUCCESS != rv)
         return rv;
 
     rv = apr_socket_connect(sock, sa);
-    if (APR_SUCCESS != rv)
+    if (rv != APR_SUCCESS)
         return HTTP_INTERNAL_SERVER_ERROR;
 
     rv = apr_socket_send(sock, req_hdr, &len);
@@ -141,6 +141,7 @@ static int websync_handler(request_rec *r)
                        r->pool);
 
     if (APR_SUCCESS != rv) {
+        /* TODO: attempt to create the parent dir if it's missing */
         ap_rprintf(r, "the file result %d : %s<br>", rv, (apr_strerror(rv, errorbuf, sizeof(errorbuf))));
     }
     else {
