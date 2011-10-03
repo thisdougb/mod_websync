@@ -52,3 +52,25 @@ http://web3/websync/images/a.gif?f=web1
 http://web4/websync/images/a.gif?f=web1
 
 now /images/a.gif will exist on all web servers in the cluster.
+
+
+Try it cheaply
+--------------
+
+Imagine you have a two server cluster, web1 and a public web server.  Because
+you are cheap, you actually only have one web server so you'll use any public
+site as your pretend second server.   Let's say web1 and www.example.com.
+
+Setup mod_websync on your web1 server, and confirm it works ok.  Navigate
+www.example.com and find a likely image to pretend to sync; something small
+and generic.  Let's say www.example.com/images/a.gif, so we need to have a
+/images directory on web1.
+
+Now, pretend you just uploaded a.gif to www.example.com/images and need to
+sync the image to web1.   Call this (browser or command line):
+
+http://web1/images/a.gif?f=www.example.com
+
+and then check the file has come across:
+
+http://web1/images/a.gif
